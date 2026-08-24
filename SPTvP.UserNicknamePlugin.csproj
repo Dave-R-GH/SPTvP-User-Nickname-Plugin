@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>SPTvP.UserPlugin</AssemblyName>
-    <RootNamespace>SPTvP.UserPlugin</RootNamespace>
+    <AssemblyName>SPTvP.UserNicknamePlugin</AssemblyName>
+    <RootNamespace>SPTvP.UserNicknamePlugin</RootNamespace>
     <Version>0.0.1</Version>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
@@ -48,7 +48,11 @@
     <Reference Include="Sirenix.Serialization">
     <HintPath>$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\Sirenix.Serialization.dll</HintPath>
     <Private>false</Private>
-  </Reference>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+    <HintPath>$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    <Private>false</Private>
+    </Reference>
   </ItemGroup>
 </Project>
 
