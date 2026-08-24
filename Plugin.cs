@@ -1,13 +1,41 @@
+using System;
 using BepInEx;
 using HarmonyLib;
 
-namespace SPTvP.UserPlugin;
+namespace SPTvP.UserNicknamePlugin;
 
-[BepInPlugin("com.stoneworth.sptvp", "Stoneworth-SPTvP", "0.0.1")]
+[BepInPlugin("com.stoneworth.sptvp.usernickname", "SPTvP User Nickname Plugin", "0.0.1")]
 public sealed class Plugin : BaseUnityPlugin {
+    private const string LaunchSessionVariable = "SPTVP_LAUNCH_SESSION";
+    internal static LaunchIdentity? CurrentIdentity {
+        get;
+        private set;
+    }
+
     private void Awake(){
-        var harmony = new Harmony("com.stoneworth.sptvp");
+        string handoffPath = Environment.GetEnvironmentVariable(LaunchSessionVariable);
+
+        if(string.IsNullOrWhiteSpace(handoffPath)){
+            Logger.LogInfo(
+                "No SPTvP launch session was provided. " + "The User Nickname Plugin will remain inactive."
+            );
+            return;
+        }
+        if(!LaunchIdentityReader.TryRead(
+            handoffPath,
+            out LaunchIdentity? identity,
+            out string error)){
+                Logger.LogError(
+                    "The SPTvP launch session was rejected: " + error
+                );
+                return;
+            }
+        CurrentIdentity = identity;
+
+        var harmony = new Harmony("com.stoneworth.sptvp.usernickname");
+
         harmony.PatchAll();
-        Logger.LogInfo("SPTvP User Nickname Plugin Loaded. (0.0.1)");
+
+        Logger.LogInfo("SPTvP User Nickname Plugin enabled for " + identity.Username);
     }
 }
