@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>SPTvP.UserPlugin</AssemblyName>
+    <RootNamespace>SPTvP.UserPlugin</RootNamespace>
+    <Version>0.0.1</Version>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <Target Name="ValidateSptReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(SptReferenceRoot)' == ''" Text="Set SPTVP_SPT_REFERENCE_ROOT or pass 
+    -p:SptReferenceRoot=&lt;path&gt; to a clean SPT 4.1.3 installation." />
+    <Error Condition="!Exists('$(SptReferenceRoot)\BepInEx\core\BepInEx.dll')" Text="BepInEx.dll was not found 
+    beneath SptReferenceRoot." />
+    <Error Condition="!Exists('$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll')" 
+    Text="UnityEngine.CoreModule.dll was not found beneath SptReferenceRoot." />
+  </Target>
+
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(SptReferenceRoot)\BepInEx\core\BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(SptReferenceRoot)\BepInEx\core\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Sirenix.Serialization">
+    <HintPath>$(SptReferenceRoot)\EscapeFromTarkov_Data\Managed\Sirenix.Serialization.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  </ItemGroup>
+</Project>
+

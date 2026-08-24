@@ -1,0 +1,17 @@
+bin/
+obj/
+.vs/
+.idea/
+TestResults/
+*.user
+*.suo
+*.log
+*.pdb
+
+# Never commit game, SPT, Fika, or locally copied reference files.
+references/
+BepInEx/
+SPT_Runtime/
+EscapeFromTarkov.exe
+EscapeFromTarkov_Data/
+

@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <SptReferenceRoot Condition="'$(SptReferenceRoot)' == ''">$(SPTVP_SPT_REFERENCE_ROOT)</SptReferenceRoot>
+  </PropertyGroup>
+</Project>
+

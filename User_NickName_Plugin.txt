@@ -1,0 +1,83 @@
+- PURPOSE
+    - Display the User's globally unique SPTvP username as their in game nickname
+    - Preserve the exact casing and symbols used in the user's username
+    - Use the given SPTvP username as the user's nickname in every community
+
+- AUTHORITY
+    - The User's account ID is the authoritative internal ID
+    - Every username of every account is globally unique and is linked to exactly one user ID
+    - Owner layer enforces username uniqueness in a case-insensitive manner
+    - Although specific casing is preserved for display purposes
+    - Community node is unable to create/rename/reassign usernames for users
+    - Community profiles are keyed by community ID + user account ID
+    - Each community profile stores and displays the user's username as the in-game nickname
+    - Server bridge enforces the username to in game nickname mapping
+    - Plugin displays the username as the in game nickname and does not allow altering
+    - Locally supplied nicknames can never be accepted as proof of ID
+    - Nickname uniqueness is not checked separately by each community (Should never show 'taken' for a nickname)
+
+- LAUNCHER HANDOFF
+    - On game launch for a specific community, the launcher receives a short lived, one use launch grant from the given
+      communities Community Node.
+    - The grant is scoped to the user acc ID, community ID, node ID and session.
+    - The launcher presents the grant to the SPT server bridge
+    - The bridge redeems the grant with the community node
+    - The node validates membership, scope, expiry and one use status.
+    - The bridge receives the user account ID and the preserved username of the user
+    - The plugin receives the verified username through the trusted local session state
+    - The plugin does not decode the grant or trust an environment variable, command line nickname or editable local
+      file as proof of identity
+
+- IN-GAME BEHAVIOUR
+    - During profile creation for a SPTvP session, the nickname section is automatically filled in by supplied verified
+      username from trusted local session state..
+    - The nickname tab on profile creation, and in general settings afterwards, remain unchangeable.
+    - On profile creation screen, the text just above the nickname textbox should say "SPTvP Username"
+    - In the settings (at nickname change location), should be uneditable, with tooltip showing "SPTvP Username" when hovering
+      on the nickname
+    - No other text field should be altered/manipulated
+    - Do not change any other SPT behaviour
+
+- FAILURE BEHAVIOUR
+    - If any SPT session is launched outside of the SPTvP launcher, remain completely inactive
+    - If the grant is invalid, expired, already used, scoped incorrectly, reject the SPTvP session and block
+      SPTvP admission, display the error while the SPTvP launcher remains open.
+    - If the loaded profile does not match the ID of the user, never open it, reject the SPTvP session and block
+      SPTvP admission, display the error while the SPTvP launcher remains open.
+    - If the profile nickname of loaded account does not match the authoritative username, block launch and request
+      profile repair, do not silently alter the nickname.
+    - If the plugin is missing/outdated, the community node must refuse launch, and show appropriate message to user
+    - Never fall back to a locally supplied username
+    - For any error, write concise diagnostic details to the user's BepInEx log, excluding any tokens or grants.
+    - Never interfere with ordinary SPT sessions launched outside of the SPTvP launcher, even if the plugin is broken/outdated
+
+- COMPATIBILITY
+    - Target appropriate SPT version (4.1.3) + Corresponding EFT version required by that SPT version. (0.16.9.40743)
+    - Target appropriate Fika client version (2.4.2) (for corresponding community Fika server version)
+
+- TESTING
+    - Correct nickname appears in initial profile creation
+    - Capitalisation/symbols are preserved correctly
+    - Profile creation nickname textbox has text "SPTvP Username"
+    - Profile creation nickname cannot be altered
+    - Post profile creation, the nickname textbox in settings cannot be changed, shows tooltip "SPTvP Username"
+    - Any other textbox remains unaffected
+    - Various communities can create a profile with the same name (No 'taken' username)
+    - If the nickname put forward does not match the one that was in the grant on game launch, error with log
+    - On a game launch outside of the SPTvP launcher, plugin remains inactive (allows custom usernames/changing usernames)
+    - Two usernames differing only by casing CANNOT belong to two separate accounts
+    - The given casing in the username must survive logins/account creations/logouts/game launches
+    - Profiles must always be resolved using the community ID + account ID key, never by nickname alone
+    - Another account may never load a profile merely by supplying a nickname
+    - A grant that's expired, incorrect, used, scoped incorrectly etc... must be rejected
+    - A locally edited profile nickname does not override the supplied authoritative username
+    - A missing or modified plugin prevents SPTvP launch.
+    - Unsupported SPT/Fika/Modpack versions fail safely
+    - Logs contain no access token, refresh token, launch grant or node credential.
+    - Same account receives the correct username across different communities
+
+- DELETED PROFILES
+    - A web profile created with a username that was previously deleted will not
+      inherit any profiles, even if joining the same community as the old account,
+      as the user ID will be different, thus the community ID + user ID key will differ, thus
+      creating a new account
