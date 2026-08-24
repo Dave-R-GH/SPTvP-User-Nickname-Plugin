@@ -4,7 +4,7 @@ using EFT.Settings.Game;
 using EFT.UI.Settings;
 using HarmonyLib;
 
-namespace SPTvP.UserPlugin;
+namespace SPTvP.UserNicknamePlugin;
 
 /* Patch for locking the nickname of a user to their
    SPTvP username, and not allowing any changes */
@@ -12,23 +12,30 @@ namespace SPTvP.UserPlugin;
     // Profile Creation Part
 [HarmonyPatch(typeof(NicknameField))]
 internal static class NicknameFieldPatch {
-    private const string TestUsername = "FartMan123";
 
     [HarmonyPostfix]
     [HarmonyPatch(nameof(NicknameField.Init))]
     private static void InitPostfix(NicknameField __instance){
-        ApplyTestUsername(__instance);
+        ApplyLaunchUsername(__instance);
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(nameof(NicknameField.ValidationCallback))]
     private static void ValidationCallbackPostfix(NicknameField __instance){
-        ApplyTestUsername(__instance);
+        ApplyLaunchUsername(__instance);
         __instance._inputField.interactable = false;
     }
 
-    private static void ApplyTestUsername(NicknameField __instance){
-        __instance._inputField.SetTextWithoutNotify(TestUsername);
+    private static void ApplyLaunchUsername(NicknameField __instance){
+        LaunchIdentity? identity = Plugin.CurrentIdentity;
+
+        if(identity == null){
+            return;
+        }
+
+        string username = identity.Username;
+
+        __instance._inputField.SetTextWithoutNotify(username);
         __instance._statusLabel.text = "SPTvP Username";
         __instance._inputField.readOnly = true;
         __instance._inputField.interactable = false;
