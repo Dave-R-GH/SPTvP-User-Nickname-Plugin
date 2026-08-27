@@ -1,6 +1,7 @@
 using System;
 using BepInEx;
 using HarmonyLib;
+using UnityEngine;
 
 namespace SPTvP.UserNicknamePlugin;
 
@@ -25,9 +26,10 @@ public sealed class Plugin : BaseUnityPlugin {
             handoffPath,
             out LaunchIdentity? identity,
             out string error)){
-                Logger.LogError(
+                Logger.LogFatal(
                     "The SPTvP launch session was rejected: " + error
                 );
+                Application.Quit();
                 return;
             }
         CurrentIdentity = identity;
@@ -39,3 +41,4 @@ public sealed class Plugin : BaseUnityPlugin {
         Logger.LogInfo("SPTvP User Nickname Plugin enabled for " + identity.Username);
     }
 }
+
